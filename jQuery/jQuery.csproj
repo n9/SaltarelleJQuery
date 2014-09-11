@@ -44,10 +44,9 @@
   <ItemGroup>
     <Compile Include="BooleanFunction.cs" />
     <Compile Include="ActionWithContext.cs" />
-    <Compile Include="jQueryDataHttpRequest.cs" />
     <Compile Include="jQueryDeferredFilter.cs" />
     <Compile Include="jQueryXmlHttpRequest.cs" />
-    <Compile Include="IDeferred.cs" />
+    <Compile Include="Deferred.cs" />
     <Compile Include="jQueryDeferredInitializer.cs" />
     <Compile Include="jQueryDeferred.cs" />
     <Compile Include="jQueryObject.cs" />
@@ -88,6 +87,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Saltarelle.Web.2.3.0\lib\Saltarelle.Web.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.3.0\tools\Saltarelle.Compiler.targets')" />
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.2.3.0\tools\Saltarelle.Compiler.targets" Condition="Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.3.0\tools\Saltarelle.Compiler.targets')" />

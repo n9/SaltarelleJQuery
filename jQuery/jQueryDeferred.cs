@@ -7,519 +7,116 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace jQueryApi {
-
-    /// <summary>
-    /// Represents a deferred value.
-    /// </summary>
+namespace jQueryApi
+{
     [Imported]
     [IgnoreNamespace]
-    [ScriptName("Object")]
-    public sealed class jQueryDeferred : IDeferred {
+    public interface IjQueryPromise<out TResult> { }
 
-        private jQueryDeferred() {
-        }
+    [Imported]
+    [IgnoreNamespace]
+    public interface IjQueryPromiseProgress<out TProgress> { }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or
-        /// rejected.
-        /// </summary>
-        /// <param name="callbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred Always(params Action[] callbacks) {
-            return null;
-        }
+    [Imported]
+    [IgnoreNamespace]
+    public interface IjQueryPromise<out TResult, out TProgress> : IjQueryPromise<TResult>, IjQueryPromiseProgress<TProgress> { }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or
-        /// rejected.
-        /// </summary>
-        /// <param name="callbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred Always(params Callback[] callbacks) {
-            return null;
-        }
+    [Imported]
+    [IgnoreNamespace]
+    public static class jQueryPromiseEx
+    {
+        [InlineCode("{$System.Threading.Tasks.Task}.fromPromise({p}, 0)")]
+        public static Task<TResult> ToTask<TResult>(this IjQueryPromise<TResult> p) { return null; } 
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved. If the
-        /// deferred object is already resolved, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred Done(params Action[] doneCallbacks) {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static bool IsRejected<T>(this IjQueryPromise<T> t) { return default(bool); }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved. If the
-        /// deferred object is already resolved, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred Done(params Callback[] doneCallbacks) {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static bool IsResolved<T>(this IjQueryPromise<T> t) { return default(bool); }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is rejected. If the
-        /// deferred object is already resolved, the handlers are still invoked.
-        /// </summary>
-        /// <param name="failCallbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred Fail(params Action[] failCallbacks) {
-            return null;
-        }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is rejected. If the
-        /// deferred object is already resolved, the handlers are still invoked.
-        /// </summary>
-        /// <param name="failCallbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred Fail(params Callback[] failCallbacks) {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T Always<T>(this T t, params Action<object>[] callbacks)
+            where T : IjQueryPromise<object> { return t; }
 
-        /// <summary>
-        /// Determines whether the deferred object has been rejected.
-        /// </summary>
-        /// <returns>true if it has been rejected; false otherwise.</returns>
-        public bool IsRejected() {
-            return false;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T Fail<T>(this T t, params Action<object>[] failCallbacks)
+            where T : IjQueryPromise<object> { return t; }
 
-        /// <summary>
-        /// Determines whether the deferred object has been resolved.
-        /// </summary>
-        /// <returns>true if it has been resolved; false otherwise.</returns>
-        public bool IsResolved() {
-            return false;
-        }
 
-        /// <summary>
-        /// Returns a deferred object that can be further composed.
-        /// </summary>
-        /// <returns>A deferred object.</returns>
-        public IDeferred Promise() {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T Done<T, TResult>(this T t, params Action<TResult>[] doneCallbacks)
+            where T : IjQueryPromise<TResult> { return t; }
 
-        /// <summary>
-        /// Rejects the deferred object and call any failure callbacks with the specified arguments.
-        /// </summary>
-        /// <param name="args">The arguments to pass to the callbacks.</param>
-        /// <returns>The current deferred object.</returns>
-        [ExpandParams]
-        public jQueryDeferred Reject(params object[] args) {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T Then<T, TResult>(this T t, Action<TResult> doneCallback)
+            where T : IjQueryPromise<TResult> { return t; }
 
-        /// <summary>
-        /// Rejects the deferred object and call any failure callbacks with the specified arguments
-        /// using the specified context as the this parameter.
-        /// </summary>
-        /// <param name="context">The context in which the callback is invoked.</param>
-        /// <param name="args">The arguments to pass to the callbacks.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred RejectWith(object context, params object[] args) {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T Then<T, TResult>(this T t, Action<TResult> doneCallback, Action<object> failCallback)
+            where T : IjQueryPromise<TResult> { return t; }
 
-        /// <summary>
-        /// Resolves the deferred object and call any done callbacks with the specified arguments.
-        /// </summary>
-        /// <param name="args">The arguments to pass to the callbacks.</param>
-        /// <returns>The current deferred object.</returns>
-        [ExpandParams]
-        public jQueryDeferred Resolve(params object[] args) {
-            return null;
-        }
 
-        /// <summary>
-        /// Resolves the deferred object and call any failure callbacks with the specified arguments
-        /// using the specified context as the this parameter.
-        /// </summary>
-        /// <param name="context">The context in which the callback is invoked.</param>
-        /// <param name="args">The arguments to pass to the callbacks.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred ResolveWith(object context, params object[] args) {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T Progress<T, TProgress>(this T t, params Action<TProgress>[] progressCallbacks)
+            where T : IjQueryPromiseProgress<TProgress> { return t; }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or rejected.
-        /// If the object has already been resolved or rejected, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallback">The callback to invoke when the object is resolved.</param>
-        /// <param name="failCallback">The callback to invoke when the object is rejected.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred Then(Action doneCallback, Action failCallback) {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T Then<T, TResult, TProgress>(this T t, Action<TResult> doneCallback, Action<object> failCallback, Action<TProgress> progressCallback)
+            where T : IjQueryPromise<TResult, TProgress> { return t; }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or rejected.
-        /// If the object has already been resolved or rejected, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallback">The callback to invoke when the object is resolved.</param>
-        /// <param name="failCallback">The callback to invoke when the object is rejected.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred Then(Callback doneCallback, Callback failCallback) {
-            return null;
-        }
-
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or rejected.
-        /// If the object has already been resolved or rejected, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallbacks">The callbacks to invoke when the object is resolved.</param>
-        /// <param name="failCallbacks">The callbacks to invoke when the object is rejected.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred Then(Action[] doneCallbacks, Action[] failCallbacks) {
-            return null;
-        }
-
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or rejected.
-        /// If the object has already been resolved or rejected, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallbacks">The callbacks to invoke when the object is resolved.</param>
-        /// <param name="failCallbacks">The callbacks to invoke when the object is rejected.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred Then(Callback[] doneCallbacks, Callback[] failCallbacks) {
-            return null;
-        }
-
-        #region Implementation of IDeferred
-
-		void IPromise.Then(Delegate fulfilledHandler) {
-		}
-
-		void IPromise.Then(Delegate fulfilledHandler, Delegate errorHandler) {
-		}
-
-		void IPromise.Then(Delegate fulfilledHandler, Delegate errorHandler, Delegate progressHandler) {
-		}
-
-        IDeferred IDeferred.Always(params Action[] callbacks) {
-            return null;
-        }
-
-        IDeferred IDeferred.Always(params Callback[] callbacks) {
-            return null;
-        }
-
-        IDeferred IDeferred.Done(params Action[] doneCallbacks) {
-            return null;
-        }
-
-        IDeferred IDeferred.Done(params Callback[] doneCallbacks) {
-            return null;
-        }
-
-        IDeferred IDeferred.Fail(params Action[] failCallbacks) {
-            return null;
-        }
-
-        IDeferred IDeferred.Fail(params Callback[] failCallbacks) {
-            return null;
-        }
-
-        bool IDeferred.IsRejected() {
-            return false;
-        }
-
-        bool IDeferred.IsResolved() {
-            return false;
-        }
-
-        IDeferred IDeferred.Pipe(jQueryDeferredFilter successFilter) {
-            return null;
-        }
-
-        IDeferred IDeferred.Pipe(jQueryDeferredFilter successFilter, jQueryDeferredFilter failFilter) {
-            return null;
-        }
-
-        IDeferred IDeferred.Then(Action doneCallback, Action failCallback) {
-            return null;
-        }
-
-        IDeferred IDeferred.Then(Callback doneCallback, Callback failCallback) {
-            return null;
-        }
-
-        IDeferred IDeferred.Then(Action[] doneCallbacks, Action[] failCallbacks) {
-            return null;
-        }
-
-        IDeferred IDeferred.Then(Callback[] doneCallbacks, Callback[] failCallbacks) {
-            return null;
-        }
-
-        #endregion
     }
 
-
-
-    /// <summary>
-    /// Represents a deferred value.
-    /// </summary>
     [Imported]
     [IgnoreNamespace]
-    [ScriptName("Object")]
-    public sealed class jQueryDeferred<TData> : IDeferred<TData> {
+    public interface IjQueryDeferredCommon { }
 
-        private jQueryDeferred() {
-        }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or
-        /// rejected.
-        /// </summary>
-        /// <param name="callbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        [ExpandParams]
-        public jQueryDeferred<TData> Always(params Action[] callbacks) {
-            return null;
-        }
+    [Imported]
+    [IgnoreNamespace]
+    public interface IjQueryDeferred<TResult> : IjQueryPromise<TResult> { }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or
-        /// rejected.
-        /// </summary>
-        /// <param name="callbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        [ExpandParams]
-        public jQueryDeferred<TData> Always(params Action<TData>[] callbacks) {
-            return null;
-        }
+    [Imported]
+    [IgnoreNamespace]
+    public interface IjQueryDeferredProgress<TProgress> { }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved. If the
-        /// deferred object is already resolved, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        [ExpandParams]
-        public jQueryDeferred<TData> Done(params Action[] doneCallbacks) {
-            return null;
-        }
+    [Imported]
+    [IgnoreNamespace]
+    public interface IjQueryDeferred<TResult, TProgress> : IjQueryDeferred<TResult>, IjQueryDeferredProgress<TProgress>, IjQueryPromise<TResult, TProgress> { }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved. If the
-        /// deferred object is already resolved, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        [ExpandParams]
-        public jQueryDeferred<TData> Done(params Action<TData>[] doneCallbacks) {
-            return null;
-        }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is rejected. If the
-        /// deferred object is already resolved, the handlers are still invoked.
-        /// </summary>
-        /// <param name="failCallbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        [ExpandParams]
-        public jQueryDeferred<TData> Fail(params Action[] failCallbacks) {
-            return null;
-        }
+    [Imported]
+    [IgnoreNamespace]
+    public static class jQueryDeferredEx
+    {
+        [InstanceMethodOnFirstArgument]
+        public static IjQueryPromise<T> Promise<T>(this IjQueryDeferred<T> d) { return null; }
 
-        /// <summary>
-        /// Add handlers to be called when the deferred object is rejected. If the
-        /// deferred object is already resolved, the handlers are still invoked.
-        /// </summary>
-        /// <param name="failCallbacks">The callbacks to invoke (in order).</param>
-        /// <returns>The current deferred object.</returns>
-        [ExpandParams]
-        public jQueryDeferred<TData> Fail(params Action<TData>[] failCallbacks) {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T Reject<T>(this T t, object arg)
+            where T : IjQueryDeferredCommon { return t; }
 
-        /// <summary>
-        /// Determines whether the deferred object has been rejected.
-        /// </summary>
-        /// <returns>true if it has been rejected; false otherwise.</returns>
-        public bool IsRejected() {
-            return false;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T RejectWith<T>(this T t, object context, object arg)
+            where T : IjQueryDeferredCommon { return t; }
 
-        /// <summary>
-        /// Determines whether the deferred object has been resolved.
-        /// </summary>
-        /// <returns>true if it has been resolved; false otherwise.</returns>
-        public bool IsResolved() {
-            return false;
-        }
 
-        /// <summary>
-        /// Returns a deferred object that can be further composed.
-        /// </summary>
-        /// <returns>A deferred object.</returns>
-        public IDeferred<TData> Promise() {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T Resolve<T, TResult>(this T t, TResult arg)
+            where T : IjQueryDeferred<TResult> { return t; }
 
-        /// <summary>
-        /// Rejects the deferred object and call any failure callbacks with the specified arguments.
-        /// </summary>
-        /// <param name="args">The arguments to pass to the callbacks.</param>
-        /// <returns>The current deferred object.</returns>
-        [ExpandParams]
-        public jQueryDeferred<TData> Reject(params TData[] args) {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T ResolveWith<T, TResult>(this T t, object context, TResult arg)
+            where T : IjQueryDeferred<TResult> { return t; }
 
-        /// <summary>
-        /// Rejects the deferred object and call any failure callbacks with the specified arguments
-        /// using the specified context as the this parameter.
-        /// </summary>
-        /// <param name="context">The context in which the callback is invoked.</param>
-        /// <param name="args">The arguments to pass to the callbacks.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred<TData> RejectWith(object context, params TData[] args) {
-            return null;
-        }
 
-        /// <summary>
-        /// Resolves the deferred object and call any done callbacks with the specified arguments.
-        /// </summary>
-        /// <param name="args">The arguments to pass to the callbacks.</param>
-        /// <returns>The current deferred object.</returns>
-        [ExpandParams]
-        public jQueryDeferred<TData> Resolve(params TData[] args) {
-            return null;
-        }
+        [InstanceMethodOnFirstArgument]
+        public static T Notify<T, TProgress>(this T t, TProgress arg)
+            where T : IjQueryDeferredProgress<TProgress> { return t; }
 
-        /// <summary>
-        /// Resolves the deferred object and call any failure callbacks with the specified arguments
-        /// using the specified context as the this parameter.
-        /// </summary>
-        /// <param name="context">The context in which the callback is invoked.</param>
-        /// <param name="args">The arguments to pass to the callbacks.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred<TData> ResolveWith(object context, params TData[] args) {
-            return null;
-        }
-
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or rejected.
-        /// If the object has already been resolved or rejected, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallback">The callback to invoke when the object is resolved.</param>
-        /// <param name="failCallback">The callback to invoke when the object is rejected.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred<TData> Then(Action doneCallback, Action failCallback) {
-            return null;
-        }
-
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or rejected.
-        /// If the object has already been resolved or rejected, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallback">The callback to invoke when the object is resolved.</param>
-        /// <param name="failCallback">The callback to invoke when the object is rejected.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred<TData> Then(Action<TData> doneCallback, Action<TData> failCallback) {
-            return null;
-        }
-
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or rejected.
-        /// If the object has already been resolved or rejected, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallbacks">The callbacks to invoke when the object is resolved.</param>
-        /// <param name="failCallbacks">The callbacks to invoke when the object is rejected.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred<TData> Then(Action[] doneCallbacks, Action[] failCallbacks) {
-            return null;
-        }
-
-        /// <summary>
-        /// Add handlers to be called when the deferred object is resolved or rejected.
-        /// If the object has already been resolved or rejected, the handlers are still invoked.
-        /// </summary>
-        /// <param name="doneCallbacks">The callbacks to invoke when the object is resolved.</param>
-        /// <param name="failCallbacks">The callbacks to invoke when the object is rejected.</param>
-        /// <returns>The current deferred object.</returns>
-        public jQueryDeferred<TData> Then(Action<TData>[] doneCallbacks, Action<TData>[] failCallbacks) {
-            return null;
-        }
-
-        #region Implementation of IDeferred
-
-		void IPromise.Then(Delegate fulfilledHandler) {
-		}
-
-		void IPromise.Then(Delegate fulfilledHandler, Delegate errorHandler) {
-		}
-
-		void IPromise.Then(Delegate fulfilledHandler, Delegate errorHandler, Delegate progressHandler) {
-		}
-
-        IDeferred<TData> IDeferred<TData>.Always(params Action[] callbacks) {
-            return null;
-        }
-
-        IDeferred<TData> IDeferred<TData>.Always(params Action<TData>[] callbacks) {
-            return null;
-        }
-
-        IDeferred<TData> IDeferred<TData>.Done(params Action[] doneCallbacks) {
-            return null;
-        }
-
-        IDeferred<TData> IDeferred<TData>.Done(params Action<TData>[] doneCallbacks) {
-            return null;
-        }
-
-        IDeferred<TData> IDeferred<TData>.Fail(params Action[] failCallbacks) {
-            return null;
-        }
-
-        IDeferred<TData> IDeferred<TData>.Fail(params Action<TData>[] failCallbacks) {
-            return null;
-        }
-
-        bool IDeferred<TData>.IsRejected() {
-            return false;
-        }
-
-        bool IDeferred<TData>.IsResolved() {
-            return false;
-        }
-
-        IDeferred<TTargetData> IDeferred<TData>.Pipe<TTargetData>(Func<TData, IDeferred<TTargetData>> successChain) {
-            return null;
-        }
-
-        IDeferred<TTargetData> IDeferred<TData>.Pipe<TTargetData>(jQueryDeferredFilter<TTargetData, TData> successFilter) {
-            return null;
-        }
-
-        IDeferred<TTargetData> IDeferred<TData>.Pipe<TTargetData>(jQueryDeferredFilter<TTargetData, TData> successFilter, jQueryDeferredFilter<TTargetData> failFilter) {
-            return null;
-        }
-
-        IDeferred<TData> IDeferred<TData>.Then(Action doneCallback, Action failCallback) {
-            return null;
-        }
-
-        IDeferred<TData> IDeferred<TData>.Then(Action<TData> doneCallback, Action<TData> failCallback) {
-            return null;
-        }
-
-        IDeferred<TData> IDeferred<TData>.Then(Action[] doneCallbacks, Action[] failCallbacks) {
-            return null;
-        }
-
-        IDeferred<TData> IDeferred<TData>.Then(Action<TData>[] doneCallbacks, Action<TData>[] failCallbacks) {
-            return null;
-        }
-
-        #endregion
+        [InstanceMethodOnFirstArgument]
+        public static T NotifyWith<T, TProgress>(this T t, object context, TProgress arg)
+            where T : IjQueryDeferredProgress<TProgress> { return t; }
     }
 }
+
